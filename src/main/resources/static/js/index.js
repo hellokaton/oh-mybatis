@@ -39,22 +39,14 @@ function doSubmit() {
         url: '/gen',
         dataType: 'json',
         data: $("#form").serialize(),
-        success: function (data, textStatus) {
+        success: function (result) {
             $("#submitBtn").removeAttr("disabled");
-            data = JSON.parse(data);
-            if (data.rspCode == "000001") {
-                alert("数据库连接失败，请检查您的数据库地址和数据库名");
-            } else if (data.rspCode == "000002") {
-                alert("数据库连接错误");
-            } else if (data.rspCode == "000003") {
-                alert("数据库连接错误");
-            } else if (data.rspCode == "000004") {
-                alert("发生错误，请检查您的用户名或密码");
-            } else if (data.rspCode == "000005") {
-                alert("操作失败");
+            if (result && result.success) {
+                console.log(result.payload);
+                window.open("/static/temp/" + result.payload);
             } else {
-                //alert("操作成功");
-                window.open(basePath + "/tmp" + data.zipName);
+                console.log(data)
+                alert("操作失败");
             }
         },
         error: function (data, textStatus) {

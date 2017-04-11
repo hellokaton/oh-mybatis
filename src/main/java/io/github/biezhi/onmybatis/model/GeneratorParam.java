@@ -28,7 +28,7 @@ public class GeneratorParam implements Serializable {
 
     private String isHump;
 
-    private int isAlltable;
+    private String isAlltable;
 
     public String getConnection() {
         return connection;
@@ -126,11 +126,11 @@ public class GeneratorParam implements Serializable {
         this.isHump = isHump;
     }
 
-    public int getIsAlltable() {
+    public String getIsAlltable() {
         return isAlltable;
     }
 
-    public void setIsAlltable(int isAlltable) {
+    public void setIsAlltable(String isAlltable) {
         this.isAlltable = isAlltable;
     }
 }

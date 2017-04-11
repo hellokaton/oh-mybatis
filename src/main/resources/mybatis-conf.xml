@@ -9,7 +9,7 @@
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
 
-        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+        <plugin type="io.github.biezhi.onmybatis.plugin.MapperPlugin">
             <property name="mappers" value="com.kongzhong.base.BaseMapper"/>
         </plugin>
 

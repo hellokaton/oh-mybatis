@@ -1,5 +1,6 @@
 package io.github.biezhi.onmybatis.controller;
 
+import com.blade.Blade;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
@@ -12,6 +13,8 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -29,7 +32,17 @@ import java.util.zip.ZipOutputStream;
 @Controller
 public class IndexController {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
+
     static final int BUFFER = 8192;
+
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Route(value = {"/", "/index"})
     public String index() {
@@ -47,14 +60,14 @@ public class IndexController {
         // 覆盖已有的重名文件
         boolean overwrite = true;
         // 准备 配置文件
-        final String classpath = IndexController.class.getResource("").toString();
         final String srcPath = "/src" + new Date().getTime();
 
-        param.setBuildPath(classpath + srcPath);
+        String webRoot = Blade.$().webRoot();
 
-        String config_path = "mybatis-gen.xml";
-        File configFile = new File(classpath + config_path);
+        param.setBuildPath(webRoot + srcPath);
 
+        String config_path = "/mybatis-conf.xml";
+        File configFile = new File(webRoot + config_path);
         try {
             // 1.创建 配置解析器
             ConfigurationParser parser = new ConfigurationParser(warnings);
@@ -75,17 +88,20 @@ public class IndexController {
             } catch (SQLException e) {
                 result = "000004";
             } catch (Exception e) {
+                LOGGER.error("", e);
                 result = "000005";
             }
-            this.fileToZip(param.getBuildPath(), classpath + "/tmp", srcPath);/** 打包操作*/
-//            this.responseJson(response, result, srcPath + ".zip");
+            this.fileToZip(param.getBuildPath(), webRoot + "/static/temp", srcPath);
+
+            String url = srcPath + ".zip";
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         Thread.sleep(60000);
-                        File dirFile = new File(classpath + srcPath);
-                        File zipFile = new File(classpath + "/tmp" + "/" + srcPath + ".zip");
+                        File dirFile = new File(webRoot + srcPath);
+                        File zipFile = new File(webRoot + "/static/temp/" + srcPath + ".zip");
                         deleteDir(dirFile);
                         deleteDir(zipFile);
                     } catch (InterruptedException e) {
@@ -93,8 +109,9 @@ public class IndexController {
                     }
                 }
             }).start();
-            return RestResponse.ok();
+            return RestResponse.ok(url);
         } catch (Exception e) {
+            LOGGER.error("", e);
             return RestResponse.fail(e.getMessage());
         }
     }
