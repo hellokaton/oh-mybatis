@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>Mybatis文件生成器</title>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <link rel="stylesheet" type="text/css" href="/static/css/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/flat-ui.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+</head>
+
+<body style="background-color: #1abc9c;">
+<style>
+    body {
+        min-height: 800px;
+        padding-top: 65px;
+    }
+</style>
+
+<!-- Static navbar -->
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+            <a class="navbar-brand" href="#">在线Mybatis代码生成器</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+<div class="container login-form">
+    <form class="form-horizontal" role="form" id="form">
+
+        <div class="form-group">
+            <label for="connection" class="col-lg-2 control-label">数据库连接</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" placeholder="127.0.0.1" id="connection" name="p.connection"
+                       value="127.0.0.1" required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="port" class="col-lg-2 control-label">端口号</label>
+            <div class="col-xs-4">
+                <input type="text" placeholder="3306" value="3306" id="port" name="p.port" class="form-control"
+                       required/>
+            </div>
+            <label for="dataBase" class="col-lg-2 control-label">数据库</label>
+            <div class="col-xs-4">
+                <input type="text" placeholder="databaseName" id="dataBase" name="p.dataBase" class="form-control"
+                       required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="userId" class="col-lg-2 control-label">用户名</label>
+            <div class="col-xs-4">
+                <input type="text" placeholder="root" id="userId" name="p.userId" class="form-control" required/>
+            </div>
+            <label for="userPass" class="col-lg-2 control-label">密码</label>
+            <div class="col-xs-4">
+                <input type="text" placeholder="password" id="userPass" name="p.userPass" class="form-control"
+                       required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="modelPath" class="col-lg-2 control-label">实体的包名路径</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" placeholder="com.exmaple.entity" id="modelPath"
+                       name="p.modelPath" required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="daoPath" class="col-lg-2 control-label">Mapper的包名路径</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" placeholder="com.exmaple.mapper" id="daoPath"
+                       name="p.mapperPath" required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="mappingPath" class="col-lg-2 control-label">映射文件的路径</label>
+            <div class="col-lg-10">
+                <input type="text" class="form-control" placeholder="mapper" id="mappingPath" name="p.mappingPath"
+                       required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="mappingPath" class="col-lg-2 control-label">模型是否驼峰命名</label>
+            <div class="col-lg-10">
+                <input type="hidden" name="p.isHump" value="1"/>
+                <input type="checkbox" checked/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="mappingPath" class="col-lg-2 control-label">生成所有表</label>
+            <div class="col-lg-10">
+                <input type="hidden" name="p.isAlltable" value="1"/>
+                <input type="checkbox" value="0" checked/>
+            </div>
+        </div>
+
+        <div class="form-group hidden">
+            <label for="tableNames" class="col-lg-2 control-label">表名</label>
+            <div class="col-xs-3">
+                <input type="text" id="tableNames" name="tableNames" class="form-control" placeholder="table_name"
+                       required/>
+            </div>
+            <label for="modelNames" class="col-lg-2 control-label">模型名</label>
+            <div class="col-xs-3">
+                <input type="text" id="modelNames" name="modelNames" class="form-control" placeholder="TableName"
+                       required/>
+            </div>
+            <a class="btn btn-success btn-xs" onclick="addItem()" title="增加">
+                <span class="fui-check">&nbsp;增加</span>
+            </a>
+        </div>
+
+    </form>
+
+    <div class="form-group">
+        <div class="col-md-12" style="text-align: center;">
+            <a id="submitBtn" href="javascript:void(0);" onclick="doSubmit();" style="width: 200px;"
+               class="btn btn-lg btn-primary "><span class="fui-check-circle"></span>&nbsp;生成并下载</a>
+        </div>
+    </div>
+
+</div>
+<!-- /container -->
+<footer></footer>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/static/js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/js/flat-ui.min.js"></script>
+<script src="/static/js/jquery.form.js"></script>
+<script src="/static/js/jquery.validate.min.js"></script>
+<script src="/static/js/index.js"></script>
+<script>
+
+</script>
+</body>
+</html>
