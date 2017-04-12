@@ -1,40 +1,35 @@
 $(function () {
-    initConfig();// 加载配置
+
 });
 
-function initConfig() {
-    $("#form").validate();
-    setDefaultValues();//加载cookie值
-}
+var tableItems = [];
+var rowid = 0;
 
 // 增加一列表名
 function addItem() {
-    var item = "";
-    item += "<div class='form-group'>"
-        + "<label class='col-lg-2 control-label'>表名</label>"
-        + "<div class='col-xs-3'><input type='text' name='tableNames' class='form-control' /></div>"
-        + "<label class='col-lg-2 control-label'>模型名</label>"
-        + "<div class='col-xs-3'><input type='text' name='modelNames' class='form-control' /></div>"
-        + "<a class='btn btn-success btn-xs' onclick='addItem()' title='增加'><span class='fui-check'>&nbsp;增加</span></a>&nbsp;"
-        + "<a class='btn btn-danger btn-xs' onclick='redItem(this)' title='删除'><span class='fui-cross'>&nbsp;删除</span></a>"
-        + "</div>";
-    $("#form").append(item);
+    rowid++;
+    var item = $('#row-tpl').attr('rowid', rowid).html();
+    $("#gen-btn").before(item);
 }
 
 //删除一列表名
-function redItem(para) {
-    $(para).parent().remove();
+function removeItem(para) {
+    $(para).parents('.tab-items:eq(0)').remove();
 }
 
 //生成并下载
 function doSubmit() {
-    if ($("#form").valid(this, '填写信息不完整。') == false) {
+    $("#form").validate();
+    if ($("#config-form").valid(this, '填写信息不完整。') == false) {
         return;
     }
     if (typeof($("#submitBtn")) != "undefined") {
         $("#submitBtn").attr("disabled", "disabled");
     }
-    $.ajax({
+
+    console.log($("#config-form").serialize());
+    return;
+    /*$.ajax({
         type: 'post',
         url: '/gen',
         dataType: 'json',
@@ -53,5 +48,21 @@ function doSubmit() {
             alert('操作失败');
             $("#submitBtn").removeAttr("disabled");
         }
-    });
+     });*/
+}
+
+function changeCkbox(obj, id) {
+    var checked = $(obj).is(":checked");
+    if (checked) {
+        $(id).val('1');
+        if (id == 'isAlltable') {
+            $('#add-item').hide();
+            $('.tab-items').remove();
+        }
+    } else {
+        $(id).val('0');
+        if (id == 'isAlltable') {
+            $('#add-item').show();
+        }
+    }
 }

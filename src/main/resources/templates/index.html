@@ -5,143 +5,135 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
-    <link rel="stylesheet" type="text/css" href="/static/css/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/flat-ui.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+    <link href="https://cdn.bootcss.com/spectre.css/0.2.11/spectre.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/spectre.css/0.2.11/spectre-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/spectre.css/0.2.11/spectre-exp.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <link rel="shortcut icon" href="/static/img/favicon.ico">
 </head>
 
-<body style="background-color: #1abc9c;">
-<style>
-    body {
-        min-height: 800px;
-        padding-top: 65px;
-    }
-</style>
+<body>
+<section class="section section-hero bg-gray">
+    <div class="grid-hero columns container grid-960" style="margin: 0 auto;">
+        <!--<header class="text-center"><h3>Oh-Mybatis</h3></header>-->
+        <div class="column col-10 col-xs-12" style="margin: 0 auto;">
+            <form class="form-horizontal" action="#forms" id="config-form">
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">数据库连接</label>
+                        <input class="form-input" type="text" placeholder="127.0.0.1" id="connection"
+                               name="p.connection"
+                               value="127.0.0.1" required/>
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">数据库端口</label>
+                        <input class="form-input" type="text" placeholder="3306" id="port" name="p.port"
+                               value="3306" required/>
+                    </div>
+                </div>
 
-<!-- Static navbar -->
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-            </button>
-            <a class="navbar-brand" href="#">在线Mybatis代码生成器</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-</div>
-<div class="container login-form">
-    <form class="form-horizontal" role="form" id="form">
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">数据库名</label>
+                        <input class="form-input" type="text" placeholder="请输入数据库名" id="dataBase" name="p.dataBase"
+                               required/>
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="connection" class="col-lg-2 control-label">数据库连接</label>
-            <div class="col-lg-10">
-                <input type="text" class="form-control" placeholder="127.0.0.1" id="connection" name="p.connection"
-                       value="127.0.0.1" required/>
-            </div>
-        </div>
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">用户名</label>
+                        <input class="form-input" type="text" placeholder="请输入用户名" id="userId" name="p.userId"
+                               required/>
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">用户密码</label>
+                        <input class="form-input" type="text" placeholder="请输入用户密码" id="userPass" name="p.userPass"
+                               required/>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="port" class="col-lg-2 control-label">端口号</label>
-            <div class="col-xs-4">
-                <input type="text" placeholder="3306" value="3306" id="port" name="p.port" class="form-control"
-                       required/>
-            </div>
-            <label for="dataBase" class="col-lg-2 control-label">数据库</label>
-            <div class="col-xs-4">
-                <input type="text" placeholder="databaseName" id="dataBase" name="p.dataBase" class="form-control"
-                       required/>
-            </div>
-        </div>
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">实体所属包名</label>
+                        <input class="form-input" type="text" placeholder="com.exmaple.entity" id="modelPath"
+                               name="p.modelPath" required/>
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <label class="form-label">Mapper接口所属包名</label>
+                        <input class="form-input" type="text" placeholder="com.exmaple.mapper" id="mapperPath"
+                               name="p.mapperPath" required/>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="userId" class="col-lg-2 control-label">用户名</label>
-            <div class="col-xs-4">
-                <input type="text" placeholder="root" id="userId" name="p.userId" class="form-control" required/>
-            </div>
-            <label for="userPass" class="col-lg-2 control-label">密码</label>
-            <div class="col-xs-4">
-                <input type="text" placeholder="password" id="userPass" name="p.userPass" class="form-control"
-                       required/>
-            </div>
-        </div>
+                <div class="form-group">
+                    <div class="col-5">
+                        <label class="form-label">MapperXml所属路径(classpath下)</label>
+                        <input class="form-input" type="text" placeholder="mapper" id="mappingPath" name="p.mappingPath"
+                               required/>
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="modelPath" class="col-lg-2 control-label">实体的包名路径</label>
-            <div class="col-lg-10">
-                <input type="text" class="form-control" placeholder="com.exmaple.entity" id="modelPath"
-                       name="p.modelPath" required/>
-            </div>
-        </div>
+                <div class="form-group">
+                    <div class="col-5">
+                        <input type="hidden" name="p.isHump" value="1" id="isHump"
+                               onchange="changeCkbox(this, 'isHump')"/>
+                        <label class="form-switch">
+                            <input type="checkbox" checked>
+                            <i class="form-icon"></i> 是否生成驼峰式命名
+                        </label>
+                    </div>
+                    <div class="col-1">&nbsp;</div>
+                    <div class="col-6">
+                        <input type="hidden" name="p.isAlltable" value="1" id="isAlltable"/>
+                        <label class="form-switch">
+                            <input type="checkbox" checked onchange="changeCkbox(this, 'isAlltable')"/>
+                            <i class="form-icon"></i> 是否生成所有表
+                        </label>
+                        <button id="add-item" class="btn btn-link" style="display: none" onclick="addItem()">添加一项
+                        </button>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label for="daoPath" class="col-lg-2 control-label">Mapper的包名路径</label>
-            <div class="col-lg-10">
-                <input type="text" class="form-control" placeholder="com.exmaple.mapper" id="daoPath"
-                       name="p.mapperPath" required/>
-            </div>
-        </div>
+                <div id="gen-btn" class="form-group float-right" style="margin-top: 10px;">
+                    <button class="btn btn-primary" onclick="doSubmit();" type="button">生成并下载</button>
+                </div>
 
-        <div class="form-group">
-            <label for="mappingPath" class="col-lg-2 control-label">映射文件的路径</label>
-            <div class="col-lg-10">
-                <input type="text" class="form-control" placeholder="mapper" id="mappingPath" name="p.mappingPath"
-                       required/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="mappingPath" class="col-lg-2 control-label">模型是否驼峰命名</label>
-            <div class="col-lg-10">
-                <input type="hidden" name="p.isHump" value="1"/>
-                <input type="checkbox" checked/>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="mappingPath" class="col-lg-2 control-label">生成所有表</label>
-            <div class="col-lg-10">
-                <input type="hidden" name="p.isAlltable" value="1"/>
-                <input type="checkbox" value="0" checked/>
-            </div>
-        </div>
-
-        <div class="form-group hidden">
-            <label for="tableNames" class="col-lg-2 control-label">表名</label>
-            <div class="col-xs-3">
-                <input type="text" id="tableNames" name="tableNames" class="form-control" placeholder="table_name"
-                       required/>
-            </div>
-            <label for="modelNames" class="col-lg-2 control-label">模型名</label>
-            <div class="col-xs-3">
-                <input type="text" id="modelNames" name="modelNames" class="form-control" placeholder="TableName"
-                       required/>
-            </div>
-            <a class="btn btn-success btn-xs" onclick="addItem()" title="增加">
-                <span class="fui-check">&nbsp;增加</span>
-            </a>
-        </div>
-
-    </form>
-
-    <div class="form-group">
-        <div class="col-md-12" style="text-align: center;">
-            <a id="submitBtn" href="javascript:void(0);" onclick="doSubmit();" style="width: 200px;"
-               class="btn btn-lg btn-primary "><span class="fui-check-circle"></span>&nbsp;生成并下载</a>
+            </form>
         </div>
     </div>
+</section>
 
+<div id="row-tpl" style="display: none;">
+    <div class="form-group tab-items" rowid="0">
+        <div class="col-5">
+            <label class="form-label">数据库表名</label>
+            <input class="form-input" type="text" placeholder="请输入数据库表名" required/>
+        </div>
+        <div class="col-1">&nbsp;</div>
+        <div class="col-5">
+            <label class="form-label">实体名</label>
+            <input class="form-input" type="text" placeholder="请输入Java实体名" required/>
+        </div>
+        <div class="col-1">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-link" onclick="removeItem(this);">删除该项</button>
+        </div>
+    </div>
 </div>
-<!-- /container -->
-<script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/flat-ui.min.js"></script>
-<script src="/static/js/jquery.form.js"></script>
-<script src="/static/js/jquery.validate.min.js"></script>
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-validate/1.16.0/jquery.validate.min.js"></script>
 <script src="/static/js/index.js"></script>
 </body>
 </html>
