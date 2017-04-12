@@ -29,7 +29,7 @@ public class GeneratorUtils {
             if (!baseZipPath.exists()) {
                 baseZipPath.mkdirs();
             }
-            File zipFile = new File(zipFilePath + "/" + fileName + ".zip");
+            File zipFile = new File(zipFilePath + "/" + fileName);
             FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
             CheckedOutputStream cos = new CheckedOutputStream(fileOutputStream, new CRC32());
             ZipOutputStream out = new ZipOutputStream(cos);

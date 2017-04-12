@@ -1,5 +1,5 @@
 $(function () {
-
+    recoverStore();
 });
 
 var tableItems = [];
@@ -27,28 +27,28 @@ function doSubmit() {
         $("#submitBtn").attr("disabled", "disabled");
     }
 
-    console.log($("#config-form").serialize());
-    return;
-    /*$.ajax({
+    storeToCookie();
+
+    $.ajax({
         type: 'post',
         url: '/gen',
         dataType: 'json',
-        data: $("#form").serialize(),
+        data: $("#config-form").serialize(),
         success: function (result) {
             $("#submitBtn").removeAttr("disabled");
             if (result && result.success) {
                 console.log(result.payload);
-                window.open("/static/temp/" + result.payload);
+                window.open(result.payload);
             } else {
-                console.log(data)
+                console.log(result.msg)
                 alert("操作失败");
             }
         },
-        error: function (data, textStatus) {
+        error: function (result) {
             alert('操作失败');
             $("#submitBtn").removeAttr("disabled");
         }
-     });*/
+    });
 }
 
 function changeCkbox(obj, id) {
@@ -64,5 +64,19 @@ function changeCkbox(obj, id) {
         if (id == 'isAlltable') {
             $('#add-item').show();
         }
+    }
+}
+
+function recoverStore() {
+    $("#config-form input").each(function (k, v) {
+        $(v).val($.cookie("MC_" + $(v).attr('name')));
+    });
+}
+
+function storeToCookie() {
+    values = $("#config-form").serializeArray();
+    var values, index;
+    for (index = 0; index < values.length; ++index) {
+        $.cookie("MC_" + values[index].name, values[index].value, {expires: 7});
     }
 }

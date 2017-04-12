@@ -22,6 +22,7 @@ import java.util.Set;
  * @author liuzh
  */
 public class MapperPlugin extends PluginAdapter {
+
     private Set<String> mappers = new HashSet<String>();
     private boolean caseSensitive = false;
     //开始的分隔符，例如mysql为`，sqlserver为[

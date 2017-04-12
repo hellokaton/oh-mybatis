@@ -5,30 +5,23 @@ import java.io.Serializable;
 public class GeneratorParam implements Serializable {
 
     private String connection;
-
     private String dataBase;
-
     private String port;
-
     private String userId;
-
     private String userPass;
-
     private String modelPath;
-
     private String mappingPath;
-
     private String mapperPath;
-
     private String buildPath;
-
     private String[] tableNames;
-
     private String[] modelNames;
-
     private String isHump;
-
     private String isAlltable;
+    private String mapperPlugin;
+
+    public GeneratorParam() {
+
+    }
 
     public String getConnection() {
         return connection;
@@ -132,5 +125,13 @@ public class GeneratorParam implements Serializable {
 
     public void setIsAlltable(String isAlltable) {
         this.isAlltable = isAlltable;
+    }
+
+    public String getMapperPlugin() {
+        return mapperPlugin;
+    }
+
+    public void setMapperPlugin(String mapperPlugin) {
+        this.mapperPlugin = mapperPlugin;
     }
 }

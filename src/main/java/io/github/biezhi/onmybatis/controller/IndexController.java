@@ -2,6 +2,7 @@ package io.github.biezhi.onmybatis.controller;
 
 import com.blade.Blade;
 import com.blade.kit.StringKit;
+import com.blade.kit.UUID;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Route;
@@ -19,8 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class IndexController {
@@ -40,9 +42,9 @@ public class IndexController {
         // 覆盖已有的重名文件
         boolean overwrite = true;
         // 准备 配置文件
-        final String srcPath = "/src" + new Date().getTime();
+        String srcDirName = UUID.UU32();
         String webRoot = Blade.$().webRoot();
-        param.setBuildPath(webRoot + srcPath);
+        param.setBuildPath(webRoot + "/" + srcDirName);
         String config_path = "/mybatis-conf.xml";
         File configFile = new File(webRoot + config_path);
         try {
@@ -50,7 +52,10 @@ public class IndexController {
             ConfigurationParser parser = new ConfigurationParser(warnings);
             // 2.获取 配置信息
             Configuration config = parser.parseConfiguration(configFile);
+
+            // 应用配置信息
             this.applyConfig(config, param);
+
             // 3.创建 默认命令解释调回器
             DefaultShellCallback callback = new DefaultShellCallback(overwrite);
             // 4.创建 mybatis的生成器
@@ -62,9 +67,16 @@ public class IndexController {
                 LOGGER.error("", e);
                 return RestResponse.fail(e.getMessage());
             }
-            GeneratorUtils.fileToZip(param.getBuildPath(), webRoot + "/static/temp", srcPath);
-            String url = srcPath + ".zip";
-            // 3秒后删除临时文件夹
+            GeneratorUtils.fileToZip(param.getBuildPath(), webRoot + "/static/temp", srcDirName + ".zip");
+            String url = "/static/temp/" + srcDirName + ".zip";
+            Executors.newFixedThreadPool(1).submit(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+//                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
+                } catch (Exception e) {
+                    LOGGER.error("异步删除失败", e);
+                }
+            });
             return RestResponse.ok(url);
         } catch (Exception e) {
             LOGGER.error("", e);
@@ -76,11 +88,17 @@ public class IndexController {
         File dirFile = new File(param.getBuildPath());
         if (!dirFile.exists()) {
             dirFile.mkdirs();
+            new File(param.getBuildPath() + "/src/main/java").mkdirs();
+            new File(param.getBuildPath() + "/src/main/resources").mkdirs();
         }
 
         Context context = config.getContexts().get(0);
 
-        //配置数据库属性
+        // 注释
+        CommentGeneratorConfiguration cgc = context.getCommentGeneratorConfiguration();
+        cgc.setConfigurationType("io.github.biezhi.onmybatis.utils.QnloftCommentGenerator");
+
+        // 配置数据库属性
         JDBCConnectionConfiguration jdbcConnectionConfiguration = context.getJdbcConnectionConfiguration();
 
         String connection = "jdbc:mysql://" + param.getConnection() + ":" + param.getPort() + "/" + param.getDataBase();
@@ -91,17 +109,40 @@ public class IndexController {
         //配置模型的包名
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = context.getJavaModelGeneratorConfiguration();
         javaModelGeneratorConfiguration.setTargetPackage(param.getModelPath());
-        javaModelGeneratorConfiguration.setTargetProject(param.getBuildPath());
+        javaModelGeneratorConfiguration.setTargetProject(param.getBuildPath() + "/src/main/java");
 
         //mapper的包名
         JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = context.getJavaClientGeneratorConfiguration();
         javaClientGeneratorConfiguration.setTargetPackage(param.getMapperPath());
-        javaClientGeneratorConfiguration.setTargetProject(param.getBuildPath());
+        javaClientGeneratorConfiguration.setTargetProject(param.getBuildPath() + "/src/main/java");
 
         //映射文件的包名
         SqlMapGeneratorConfiguration sqlMapGeneratorConfiguration = context.getSqlMapGeneratorConfiguration();
         sqlMapGeneratorConfiguration.setTargetPackage(param.getMappingPath());
-        sqlMapGeneratorConfiguration.setTargetProject(param.getBuildPath());
+        sqlMapGeneratorConfiguration.setTargetProject(param.getBuildPath() + "/src/main/resources");
+
+        TableConfiguration tc = new TableConfiguration(context);
+        tc.setTableName("%");
+
+        // 插件
+        PluginConfiguration sp = new PluginConfiguration();
+        sp.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
+        context.addPluginConfiguration(sp);
+
+        if (StringKit.isNotBlank(param.getMapperPlugin())) {
+            PluginConfiguration pluginConfiguration = new PluginConfiguration();
+            pluginConfiguration.setConfigurationType("io.github.biezhi.onmybatis.plugin.MapperPlugin");
+            pluginConfiguration.addProperty("mappers", "com.kongzhong.base.BaseMapper");
+            context.addPluginConfiguration(pluginConfiguration);
+        } else {
+            tc.setSelectByExampleStatementEnabled(true);
+            tc.setDeleteByPrimaryKeyStatementEnabled(true);
+            tc.setUpdateByExampleStatementEnabled(true);
+            tc.setCountByExampleStatementEnabled(true);
+        }
+
+        context.getTableConfigurations().clear();
+        context.getTableConfigurations().add(tc);
 
         if (null != param.getTableNames() && param.getTableNames().length > 0) {
             //表集合
@@ -112,10 +153,10 @@ public class IndexController {
                     TableConfiguration tableConfiguration = new TableConfiguration(context);
                     tableConfiguration.setTableName(param.getTableNames()[i]);
                     tableConfiguration.setDomainObjectName(param.getModelNames()[i]);
-                    tableConfiguration.setCountByExampleStatementEnabled(false);
-                    tableConfiguration.setDeleteByExampleStatementEnabled(false);
-                    tableConfiguration.setSelectByExampleStatementEnabled(false);
-                    tableConfiguration.setUpdateByExampleStatementEnabled(false);
+                    tableConfiguration.setCountByExampleStatementEnabled(true);
+                    tableConfiguration.setDeleteByExampleStatementEnabled(true);
+                    tableConfiguration.setSelectByExampleStatementEnabled(true);
+                    tableConfiguration.setUpdateByExampleStatementEnabled(true);
                     //模型是否驼峰命名，为0则为驼峰
                     if (param.getIsHump().equals("0"))
                         tableConfiguration.getProperties().setProperty("useActualColumnNames", "true");
