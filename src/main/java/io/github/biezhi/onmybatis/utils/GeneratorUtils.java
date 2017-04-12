@@ -58,7 +58,6 @@ public final class GeneratorUtils {
                 //For pointing out missing entry for empty folder
                 if (!folderName.equalsIgnoreCase(baseFolderName)) {
                     String entryName = folderName.substring(baseFolderName.length() + 1, folderName.length()) + File.separatorChar;
-                    System.out.println("Adding folder entry " + entryName);
                     ZipEntry ze = new ZipEntry(entryName);
                     zos.putNextEntry(ze);
                 }
@@ -70,7 +69,6 @@ public final class GeneratorUtils {
                 //add file
                 //extract the relative name for entry purpose
                 String entryName = folderName.substring(baseFolderName.length() + 1, folderName.length());
-                System.out.print("Adding file entry " + entryName + "...");
                 ZipEntry ze = new ZipEntry(entryName);
                 zos.putNextEntry(ze);
                 FileInputStream in = new FileInputStream(folderName);
@@ -81,8 +79,6 @@ public final class GeneratorUtils {
                 }
                 in.close();
                 zos.closeEntry();
-                System.out.println("OK!");
-
             }
         } else {
             System.out.println("File or directory not found " + folderName);

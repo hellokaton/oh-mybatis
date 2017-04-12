@@ -1,4 +1,4 @@
-package io.github.biezhi.onmybatis.plugin;
+package io.github.biezhi.onmybatis.plugins;
 
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;

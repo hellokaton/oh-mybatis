@@ -73,7 +73,7 @@ public class IndexController {
             Executors.newFixedThreadPool(1).submit(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(3);
-                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
+//                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
                 } catch (Exception e) {
                     LOGGER.error("异步删除失败", e);
                 }
@@ -124,15 +124,20 @@ public class IndexController {
 
         TableConfiguration tc = new TableConfiguration(context);
         tc.setTableName("%");
+        tc.setAllColumnDelimitingEnabled(true);
 
         // 插件
         PluginConfiguration sp = new PluginConfiguration();
         sp.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
         context.addPluginConfiguration(sp);
 
+        PluginConfiguration abp = new PluginConfiguration();
+        abp.setConfigurationType("io.github.biezhi.onmybatis.plugins.AddAliasToBaseColumnListPlugin");
+        context.addPluginConfiguration(abp);
+
         if (StringKit.isNotBlank(param.getMapperPlugin())) {
             PluginConfiguration pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.setConfigurationType("io.github.biezhi.onmybatis.plugin.MapperPlugin");
+            pluginConfiguration.setConfigurationType("io.github.biezhi.onmybatis.plugins.MapperPlugin");
             pluginConfiguration.addProperty("mappers", "com.kongzhong.base.BaseMapper");
             context.addPluginConfiguration(pluginConfiguration);
         } else {
@@ -145,7 +150,7 @@ public class IndexController {
         context.getTableConfigurations().clear();
         context.getTableConfigurations().add(tc);
 
-        if (null != param.getTableNames() && param.getTableNames().length > 0) {
+        if (param.getTableNames() != null && 0 < param.getTableNames().length) {
             //表集合
             List<TableConfiguration> tableConfigurations = context.getTableConfigurations();
             tableConfigurations.clear();
