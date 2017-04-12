@@ -36,31 +36,6 @@
     z-index: 300;
 }
 
-.grid-header .navbar {
-    height: 4rem;
-}
-
-.grid-header .navbar-section {
-    padding: 0;
-}
-
-.grid-header .navbar-brand {
-    color: #5b657a;
-}
-
-.grid-header .btn-link {
-    color: #667189;
-    padding-left: .6rem;
-    padding-right: .6rem;
-}
-
-.grid-header .btn-link:focus,
-.grid-header .btn-link:hover,
-.grid-header .btn-link:active {
-    color: #50596c;
-    opacity: .75;
-}
-
 .grid-hero {
     /*margin-bottom: 1rem;*/
     /*margin-top: 2rem;*/
@@ -90,21 +65,10 @@
     background: none;
     border: 0;
     color: #667189;
-    padding: 1rem;
 }
 
 .grid-hero .card .card-title {
     color: #5764c6;
     font-size: 1.8rem;
     margin-bottom: 0;
-}
-
-.grid-footer {
-    color: #acb3c2;
-    margin-bottom: 1rem;
-    margin-top: 2rem;
-}
-
-.grid-footer a {
-    color: #727e96;
 }
