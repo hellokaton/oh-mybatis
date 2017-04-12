@@ -67,7 +67,8 @@ public class IndexController {
                 LOGGER.error("", e);
                 return RestResponse.fail(e.getMessage());
             }
-            GeneratorUtils.fileToZip(param.getBuildPath(), webRoot + "/static/temp", srcDirName + ".zip");
+
+            GeneratorUtils.zipFodler(param.getBuildPath(), webRoot + "/static/temp/" + srcDirName + ".zip");
             String url = "/static/temp/" + srcDirName + ".zip";
             Executors.newFixedThreadPool(1).submit(() -> {
                 try {
