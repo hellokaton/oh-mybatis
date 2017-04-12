@@ -72,7 +72,7 @@ public class IndexController {
             Executors.newFixedThreadPool(1).submit(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(3);
-//                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
+                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
                 } catch (Exception e) {
                     LOGGER.error("异步删除失败", e);
                 }
