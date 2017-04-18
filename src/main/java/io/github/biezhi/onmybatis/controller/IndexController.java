@@ -5,6 +5,7 @@ import com.blade.kit.StringKit;
 import com.blade.kit.UUID;
 import com.blade.mvc.annotation.Controller;
 import com.blade.mvc.annotation.JSON;
+import com.blade.mvc.annotation.QueryParam;
 import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
@@ -30,14 +31,21 @@ public class IndexController {
     public static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 
     @Route(value = {"/", "/index"})
-    public static String index() {
+    public String index() {
         return "index.html";
     }
 
     @Route(value = "gen", method = HttpMethod.POST)
     @JSON
-    public RestResponse gen(Request request) {
+    public RestResponse gen(Request request, @QueryParam String tableItems, @QueryParam String modelNames) {
+
         GeneratorParam param = request.model("p", GeneratorParam.class);
+
+        if (StringKit.isNotBlank(tableItems) && StringKit.isNotBlank(modelNames)) {
+            param.setTableNames(StringKit.split(tableItems, ","));
+            param.setModelNames(StringKit.split(modelNames, ","));
+        }
+
         List<String> warnings = new ArrayList<>();
         // 覆盖已有的重名文件
         boolean overwrite = true;
@@ -85,7 +93,7 @@ public class IndexController {
         }
     }
 
-    static void applyConfig(Configuration config, GeneratorParam param) {
+    void applyConfig(Configuration config, GeneratorParam param) {
         File dirFile = new File(param.getBuildPath());
         if (!dirFile.exists()) {
             dirFile.mkdirs();

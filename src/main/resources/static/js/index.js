@@ -2,7 +2,6 @@ $(function () {
     recoverStore();
 });
 
-var tableItems = [];
 var rowid = 0;
 
 // 增加一列表名
@@ -14,6 +13,7 @@ function addItem() {
 
 //删除一列表名
 function removeItem(para) {
+    rowid--;
     $(para).parents('.tab-items:eq(0)').remove();
 }
 
@@ -28,6 +28,19 @@ function doSubmit() {
     }
 
     storeToCookie();
+
+    var tableItems = [], modelNames = [];
+    if (rowid > 0) {
+        $('.tab-items').each(function (k, v) {
+            var tableName = $(v).find('input:eq(0)').val();
+            var modelName = $(v).find('input:eq(1)').val();
+
+            tableItems.push(tableName);
+            modelNames.push(modelName);
+        });
+        $("#config-form #tableItems").val(tableItems.join(','));
+        $("#config-form #modelNames").val(modelNames.join(','));
+    }
 
     $.ajax({
         type: 'post',
@@ -57,6 +70,7 @@ function changeCkbox(obj, id) {
         $(id).val('0');
         if (id == 'isAlltable') {
             $('#add-item').show();
+            addItem();
         }
     }
 }

@@ -18,6 +18,10 @@
         <!--<header class="text-center"><h3>Oh-Mybatis</h3></header>-->
         <div class="column col-10 col-xs-12" style="margin: 0 auto;">
             <form class="form-horizontal" action="#forms" id="config-form">
+
+                <input id="tableItems" name="tableItems" type="hidden">
+                <input id="modelNames" name="modelNames" type="hidden">
+
                 <div class="form-group">
                     <div class="col-5">
                         <label class="form-label">数据库连接</label>
@@ -75,7 +79,8 @@
                 <div class="form-group">
                     <div class="col-5">
                         <label class="form-label">MapperXml所属路径(classpath下)</label>
-                        <input class="form-input" type="text" placeholder="mapper" id="mappingPath" name="p.mappingPath"
+                        <input class="form-input" type="text" placeholder="com/kongzhong/mapper" id="mappingPath"
+                               name="p.mappingPath"
                                required/>
                     </div>
                     <div class="col-1">&nbsp;</div>
