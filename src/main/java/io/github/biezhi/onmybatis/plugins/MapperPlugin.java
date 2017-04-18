@@ -23,8 +23,8 @@ import java.util.Set;
  */
 public class MapperPlugin extends PluginAdapter {
 
-    private Set<String> mappers = new HashSet<String>();
-    private boolean caseSensitive = false;
+    private Set<String> mappers = new HashSet<>();
+    private boolean caseSensitive;
     //开始的分隔符，例如mysql为`，sqlserver为[
     private String beginningDelimiter = "";
     //结束的分隔符，例如mysql为`，sqlserver为]
@@ -53,26 +53,25 @@ public class MapperPlugin extends PluginAdapter {
             for (String mapper : mappers.split(",")) {
                 this.mappers.add(mapper);
             }
-        } else {
-            throw new RuntimeException("Mapper插件缺少必要的mappers属性!");
-        }
-        String caseSensitive = this.properties.getProperty("caseSensitive");
-        if (StringUtility.stringHasValue(caseSensitive)) {
-            this.caseSensitive = caseSensitive.equalsIgnoreCase("TRUE");
-        }
-        String beginningDelimiter = this.properties.getProperty("beginningDelimiter");
-        if (StringUtility.stringHasValue(beginningDelimiter)) {
-            this.beginningDelimiter = beginningDelimiter;
-        }
-        commentCfg.addProperty("beginningDelimiter", this.beginningDelimiter);
-        String endingDelimiter = this.properties.getProperty("endingDelimiter");
-        if (StringUtility.stringHasValue(endingDelimiter)) {
-            this.endingDelimiter = endingDelimiter;
-        }
-        commentCfg.addProperty("endingDelimiter", this.endingDelimiter);
-        String schema = this.properties.getProperty("schema");
-        if (StringUtility.stringHasValue(schema)) {
-            this.schema = schema;
+
+            String caseSensitive = this.properties.getProperty("caseSensitive");
+            if (StringUtility.stringHasValue(caseSensitive)) {
+                this.caseSensitive = caseSensitive.equalsIgnoreCase("TRUE");
+            }
+            String beginningDelimiter = this.properties.getProperty("beginningDelimiter");
+            if (StringUtility.stringHasValue(beginningDelimiter)) {
+                this.beginningDelimiter = beginningDelimiter;
+            }
+            commentCfg.addProperty("beginningDelimiter", this.beginningDelimiter);
+            String endingDelimiter = this.properties.getProperty("endingDelimiter");
+            if (StringUtility.stringHasValue(endingDelimiter)) {
+                this.endingDelimiter = endingDelimiter;
+            }
+            commentCfg.addProperty("endingDelimiter", this.endingDelimiter);
+            String schema = this.properties.getProperty("schema");
+            if (StringUtility.stringHasValue(schema)) {
+                this.schema = schema;
+            }
         }
     }
 
@@ -123,24 +122,33 @@ public class MapperPlugin extends PluginAdapter {
      */
     private void processEntityClass(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         //引入JPA注解
-        topLevelClass.addImportedType("javax.persistence.*");
-        String tableName = introspectedTable.getFullyQualifiedTableNameAtRuntime();
+//        topLevelClass.addImportedType("javax.persistence.*");
+//        String tableName = introspectedTable.getFullyQualifiedTableNameAtRuntime();
         //如果包含空格，或者需要分隔符，需要完善
-        if (StringUtility.stringContainsSpace(tableName)) {
-            tableName = context.getBeginningDelimiter()
-                    + tableName
-                    + context.getEndingDelimiter();
-        }
+//        if (StringUtility.stringContainsSpace(tableName)) {
+//            tableName = context.getBeginningDelimiter()
+//                    + tableName
+//                    + context.getEndingDelimiter();
+//        }
         //是否忽略大小写，对于区分大小写的数据库，会有用
-        if (caseSensitive && !topLevelClass.getType().getShortName().equals(tableName)) {
-            topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
-        } else if (!topLevelClass.getType().getShortName().equalsIgnoreCase(tableName)) {
-            topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
-        } else if (StringUtility.stringHasValue(schema)
-                || StringUtility.stringHasValue(beginningDelimiter)
-                || StringUtility.stringHasValue(endingDelimiter)) {
-            topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
+//        if (caseSensitive && !topLevelClass.getType().getShortName().equals(tableName)) {
+//            topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
+//        } else if (!topLevelClass.getType().getShortName().equalsIgnoreCase(tableName)) {
+//            topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
+//        } else if (StringUtility.stringHasValue(schema)
+//                || StringUtility.stringHasValue(beginningDelimiter)
+//                || StringUtility.stringHasValue(endingDelimiter)) {
+//            topLevelClass.addAnnotation("@Table(name = \"" + getDelimiterName(tableName) + "\")");
+//        }
+        if (StringUtility.stringHasValue(introspectedTable.getRemarks())) {
+            topLevelClass.addJavaDocLine("/**");
+            StringBuilder sb = new StringBuilder();
+            sb.append(" * ");
+            sb.append(introspectedTable.getRemarks());
+            topLevelClass.addJavaDocLine(sb.toString());
+            topLevelClass.addJavaDocLine(" */");
         }
+
     }
 
     /**

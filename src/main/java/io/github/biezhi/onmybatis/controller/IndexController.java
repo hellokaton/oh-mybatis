@@ -30,7 +30,7 @@ public class IndexController {
     public static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
 
     @Route(value = {"/", "/index"})
-    public String index() {
+    public static String index() {
         return "index.html";
     }
 
@@ -54,7 +54,7 @@ public class IndexController {
             Configuration config = parser.parseConfiguration(configFile);
 
             // 应用配置信息
-            this.applyConfig(config, param);
+            applyConfig(config, param);
 
             // 3.创建 默认命令解释调回器
             DefaultShellCallback callback = new DefaultShellCallback(overwrite);
@@ -73,7 +73,7 @@ public class IndexController {
             Executors.newFixedThreadPool(1).submit(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(3);
-//                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
+                    GeneratorUtils.deleteDir(new File(webRoot + "/" + srcDirName));
                 } catch (Exception e) {
                     LOGGER.error("异步删除失败", e);
                 }
@@ -85,7 +85,7 @@ public class IndexController {
         }
     }
 
-    public void applyConfig(Configuration config, GeneratorParam param) {
+    static void applyConfig(Configuration config, GeneratorParam param) {
         File dirFile = new File(param.getBuildPath());
         if (!dirFile.exists()) {
             dirFile.mkdirs();
@@ -135,11 +135,11 @@ public class IndexController {
         abp.setConfigurationType("io.github.biezhi.onmybatis.plugins.AddAliasToBaseColumnListPlugin");
         context.addPluginConfiguration(abp);
 
+        PluginConfiguration pcf = new PluginConfiguration();
+        pcf.setConfigurationType("io.github.biezhi.onmybatis.plugins.MapperPlugin");
+
         if (StringKit.isNotBlank(param.getMapperPlugin())) {
-            PluginConfiguration pluginConfiguration = new PluginConfiguration();
-            pluginConfiguration.setConfigurationType("io.github.biezhi.onmybatis.plugins.MapperPlugin");
-            pluginConfiguration.addProperty("mappers", "com.kongzhong.base.BaseMapper");
-            context.addPluginConfiguration(pluginConfiguration);
+            pcf.addProperty("mappers", "com.kongzhong.base.BaseMapper");
         } else {
             tc.setSelectByExampleStatementEnabled(true);
             tc.setDeleteByPrimaryKeyStatementEnabled(true);
@@ -147,10 +147,11 @@ public class IndexController {
             tc.setCountByExampleStatementEnabled(true);
         }
 
+        context.addPluginConfiguration(pcf);
         context.getTableConfigurations().clear();
         context.getTableConfigurations().add(tc);
 
-        if (param.getTableNames() != null && 0 < param.getTableNames().length) {
+        if ((param.getTableNames() != null) && (0 < param.getTableNames().length)) {
             //表集合
             List<TableConfiguration> tableConfigurations = context.getTableConfigurations();
             tableConfigurations.clear();

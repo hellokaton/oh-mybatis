@@ -108,37 +108,37 @@ public class MapperCommentGenerator implements CommentGenerator {
             field.addJavaDocLine(" */");
         }
         //添加注解
-        if (field.isTransient()) {
-            //@Column
-            field.addAnnotation("@Transient");
-        }
-        for (IntrospectedColumn column : introspectedTable.getPrimaryKeyColumns()) {
-            if (introspectedColumn == column) {
-                field.addAnnotation("@Id");
-                break;
-            }
-        }
-        String column = introspectedColumn.getActualColumnName();
-        if (StringUtility.stringContainsSpace(column) || introspectedTable.getTableConfiguration().isAllColumnDelimitingEnabled()) {
-            column = introspectedColumn.getContext().getBeginningDelimiter()
-                    + column
-                    + introspectedColumn.getContext().getEndingDelimiter();
-        }
-        if (!column.equals(introspectedColumn.getJavaProperty())) {
-            //@Column
-            field.addAnnotation("@Column(name = \"" + getDelimiterName(column) + "\")");
-        } else if (StringUtility.stringHasValue(beginningDelimiter) || StringUtility.stringHasValue(endingDelimiter)) {
-            field.addAnnotation("@Column(name = \"" + getDelimiterName(column) + "\")");
-        }
-        if (introspectedColumn.isIdentity()) {
-            if (introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement().equals("JDBC")) {
-                field.addAnnotation("@GeneratedValue(generator = \"JDBC\")");
-            } else {
-                field.addAnnotation("@GeneratedValue(strategy = GenerationType.IDENTITY)");
-            }
-        } else if (introspectedColumn.isSequenceColumn()) {
-            field.addAnnotation("@SequenceGenerator(name=\"\",sequenceName=\"" + introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement() + "\")");
-        }
+//        if (field.isTransient()) {
+//            //@Column
+//            field.addAnnotation("@Transient");
+//        }
+//        for (IntrospectedColumn column : introspectedTable.getPrimaryKeyColumns()) {
+//            if (introspectedColumn == column) {
+//                field.addAnnotation("@Id");
+//                break;
+//            }
+//        }
+//        String column = introspectedColumn.getActualColumnName();
+//        if (StringUtility.stringContainsSpace(column) || introspectedTable.getTableConfiguration().isAllColumnDelimitingEnabled()) {
+//            column = introspectedColumn.getContext().getBeginningDelimiter()
+//                    + column
+//                    + introspectedColumn.getContext().getEndingDelimiter();
+//        }
+//        if (!column.equals(introspectedColumn.getJavaProperty())) {
+//            //@Column
+//            field.addAnnotation("@Column(name = \"" + getDelimiterName(column) + "\")");
+//        } else if (StringUtility.stringHasValue(beginningDelimiter) || StringUtility.stringHasValue(endingDelimiter)) {
+//            field.addAnnotation("@Column(name = \"" + getDelimiterName(column) + "\")");
+//        }
+//        if (introspectedColumn.isIdentity()) {
+//            if (introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement().equals("JDBC")) {
+//                field.addAnnotation("@GeneratedValue(generator = \"JDBC\")");
+//            } else {
+//                field.addAnnotation("@GeneratedValue(strategy = GenerationType.IDENTITY)");
+//            }
+//        } else if (introspectedColumn.isSequenceColumn()) {
+//            field.addAnnotation("@SequenceGenerator(name=\"\",sequenceName=\"" + introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement() + "\")");
+//        }
     }
 
     /**

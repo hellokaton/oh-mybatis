@@ -37,16 +37,10 @@ function doSubmit() {
         success: function (result) {
             $("#submitBtn").removeAttr("disabled");
             if (result && result.success) {
-                console.log(result.payload);
                 window.open(result.payload);
             } else {
-                console.log(result.msg)
-                alert("操作失败");
+                alert(result.msg || "操作失败");
             }
-        },
-        error: function (result) {
-            alert('操作失败');
-            $("#submitBtn").removeAttr("disabled");
         }
     });
 }
