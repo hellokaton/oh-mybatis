@@ -18,6 +18,7 @@ public class GeneratorParam implements Serializable {
     private String isHump;
     private String isAlltable;
     private String mapperPlugin;
+    private String dbType;
 
     public GeneratorParam() {
 
@@ -133,5 +134,13 @@ public class GeneratorParam implements Serializable {
 
     public void setMapperPlugin(String mapperPlugin) {
         this.mapperPlugin = mapperPlugin;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }
