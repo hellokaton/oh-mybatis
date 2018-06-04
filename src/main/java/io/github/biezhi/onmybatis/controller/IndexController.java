@@ -10,6 +10,7 @@ import com.blade.mvc.annotation.Route;
 import com.blade.mvc.http.HttpMethod;
 import com.blade.mvc.http.Request;
 import com.blade.mvc.view.RestResponse;
+import io.github.biezhi.onmybatis.constant.DbName;
 import io.github.biezhi.onmybatis.model.GeneratorParam;
 import io.github.biezhi.onmybatis.utils.GeneratorUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
@@ -100,8 +101,21 @@ public class IndexController {
             new File(param.getBuildPath() + "/src/main/java").mkdirs();
             new File(param.getBuildPath() + "/src/main/resources").mkdirs();
         }
-
+        String connection = null;
+        String driverClass = null;
         Context context = config.getContexts().get(0);
+        if (param.getDbType().equals(DbName.MYSQL.getName())) {
+            driverClass = "com.mysql.jdbc.Driver";
+            connection = "jdbc:mysql://" + param.getConnection() + ":" + param.getPort() + "/" + param.getDataBase();
+        }
+        if (param.getDbType().equals(DbName.POSTGRESQL.getName())) {
+            driverClass = "org.postgresql.Driver";
+            connection = "jdbc:postgresql://" + param.getConnection() + ":" + param.getPort() + "/" + param.getDataBase();
+        }
+        if (param.getDbType().equals(DbName.ORACLE.getName())) {
+            driverClass = "oracle.jdbc.OracleDriver";
+            connection = "jdbc:oracle:thin:@" + param.getConnection() + ":" + param.getPort() + ":" + param.getDataBase();
+        }
 
         // 注释
         CommentGeneratorConfiguration cgc = context.getCommentGeneratorConfiguration();
@@ -109,8 +123,7 @@ public class IndexController {
 
         // 配置数据库属性
         JDBCConnectionConfiguration jdbcConnectionConfiguration = context.getJdbcConnectionConfiguration();
-
-        String connection = "jdbc:mysql://" + param.getConnection() + ":" + param.getPort() + "/" + param.getDataBase();
+        jdbcConnectionConfiguration.setDriverClass(driverClass);
         jdbcConnectionConfiguration.setConnectionURL(connection);
         jdbcConnectionConfiguration.setUserId(param.getUserId());
         jdbcConnectionConfiguration.setPassword(param.getUserPass());

@@ -1,5 +1,6 @@
 $(function () {
     recoverStore();
+    setValueToRadio();
 });
 
 var rowid = 0;
@@ -41,7 +42,6 @@ function doSubmit() {
         $("#config-form #tableItems").val(tableItems.join(','));
         $("#config-form #modelNames").val(modelNames.join(','));
     }
-
     $.ajax({
         type: 'post',
         url: '/gen',
@@ -87,4 +87,11 @@ function storeToCookie() {
     for (index = 0; index < values.length; ++index) {
         $.cookie("MC_" + values[index].name, values[index].value, {expires: 7});
     }
+}
+
+function setValueToRadio() {
+    var radios = $("input[type='radio']");
+    $(radios[0]).val("Mysql");
+    $(radios[1]).val("Postgresql");
+    $(radios[2]).val("Oracle");
 }
